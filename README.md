@@ -5,6 +5,8 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 > **Note:** This project may expand beyond a single oxygen tank in future updates and evolve into a larger content mod.
 >
 > **Note:** A mod name change is planned for a future release.
+>
+> **Note:** I have **A LOT** Planned for this Subnautica Mod!
 
 ---
 
