@@ -82,6 +82,7 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 | Advanced Wiring Kit |        2 |
 | Power Cell          |        1 |
 
+> **Note:** The crafting recipe is not final and may be adjusted for gameplay balance in future updates.
 ---
 
 ## Compatibility
