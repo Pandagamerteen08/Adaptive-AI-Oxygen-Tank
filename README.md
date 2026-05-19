@@ -591,6 +591,7 @@ Planned features:
 * HUD indicators.
 * Localization support.
 * Expanded gameplay content beyond oxygen tanks.
+*  More Languages Check the Localization folder for the languages that will be added + more in the future
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
