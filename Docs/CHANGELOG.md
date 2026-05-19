@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.2
+
+- Added GitHub issue templates for bug reports and feature requests.
+- Added comprehensive metadata files for documentation.
+- Improved repository structure for future equipment expansion.
+- Enhanced configuration reference documentation.
+- Documentation organization improvements.
+
 ## 1.2.1
 
 - Bug fixes and stability improvements.

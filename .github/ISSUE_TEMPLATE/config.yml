@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/Pandagamerteen08/Adaptive-AI-Oxygen-Tank/discussions
+    about: Ask questions and discuss ideas
+  - name: Troubleshooting Guide
+    url: https://github.com/Pandagamerteen08/Adaptive-AI-Oxygen-Tank/blob/main/README.md#troubleshooting
+    about: Check the troubleshooting section first
