@@ -69,7 +69,7 @@ jobs:
           done
 
           # Optional: limit message size to avoid Discord limits (truncate description if necessary)
-          MAX_CHARS=3500
+          MAX_CHARS=4000
           if [ ${#DESC} -gt $MAX_CHARS ]; then
             DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
           fi
