@@ -10,6 +10,7 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 
 ## Table of Contents
 
+* [How I Do My Updates](#how-i-do-my-updates)
 * [Features](#features)
 * [Recipe](#recipe)
 * [Compatibility](#compatibility)
@@ -37,6 +38,62 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 * [FAQ](#faq)
 * [Credits](#credits)
 * [License](#license)
+
+---
+
+## How I Do My Updates
+
+This project follows semantic versioning to clearly communicate the nature of each release.
+
+### Short Version
+
+🔢 **Version Format:** `vMAJOR.MINOR.PATCH[-TAG]`
+- Example: `v1.2.0`, `v0.9.4-dev`, `v1.0.0-beta`
+
+| Level | When Incremented | Examples |
+|-------|-----------------|----------|
+| **MAJOR** | Breaking changes, system overhauls, incompatible saves | Gameplay changes, core mechanic rewrites |
+| **MINOR** | New features or content (backward compatible) | New voice packs, new personality modes |
+| **PATCH** | Bug fixes, balance tweaks, performance improvements | Fixed crash, adjusted reserve amount |
+| **TAG** | Pre-release versions (optional) | `-dev`, `-alpha`, `-beta`, `-rc` |
+
+---
+
+### Long Version
+
+🔢 **Version Format**
+vMAJOR.MINOR.PATCH[-TAG]
+Example: v1.2.0, v0.9.4-dev, v1.0.0-beta
+
+---
+
+🏗️ **MAJOR**
+Incremented when changes fundamentally alter gameplay systems, core mechanics, save compatibility, APIs, or project structure.
+A MAJOR increase indicates breaking changes and a clear separation from previous versions.
+Backward compatibility is not guaranteed.
+
+📦 **MINOR**
+Incremented when new features, content, systems, or expansions are added without breaking existing functionality.
+MINOR updates maintain compatibility with prior releases under the same MAJOR version.
+
+🛠️ **PATCH**
+Incremented for bug fixes, performance improvements, balance tweaks, and internal optimizations.
+PATCH updates introduce no new features and do not alter expected behavior.
+
+---
+
+🏷️ **TAG (Optional State Identifier)**
+Used only when a version is not considered a stable public release.
+
+Allowed tags:
+
+- `dev` → Active internal development build
+- `alpha` → Early testing, incomplete systems
+- `beta` → Feature-complete, testing for stability
+- `rc` → Release candidate pending final approval
+
+Tags are appended using a hyphen.
+Example: v1.1.0-alpha
 
 ---
 
