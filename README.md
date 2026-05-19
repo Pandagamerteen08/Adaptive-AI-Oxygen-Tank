@@ -2,6 +2,16 @@
 
 A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom model support.
 
+## How to Install the mod
+
+1. unzip the downloaded file
+
+2. Open the downloaded file and place all of the contents that is inside of the folder in the the folder that is named: AdaptiveAIOxygenTank inside of Subnautica\BepInEx\plugins
+
+Here is a video that you can watch for a guide:
+
+https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a
+
 ## Features
 
 - 475 O2 capacity.
