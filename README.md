@@ -106,6 +106,8 @@ Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
 
 Here is a video installation guide:
 
+**Note:** That it may look a little bit different but the same will apply no matter what
+
 [https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
@@ -158,6 +160,9 @@ This project follows semantic versioning to clearly communicate the nature of ea
 | **MINOR** | New features or content (backward compatible) | New voice packs, new personality modes |
 | **PATCH** | Bug fixes, balance tweaks, performance improvements | Fixed crash, adjusted reserve amount |
 | **TAG** | Pre-release versions (optional) | `-dev`, `-alpha`, `-beta`, `-rc` |
+
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ### Long Version
 
