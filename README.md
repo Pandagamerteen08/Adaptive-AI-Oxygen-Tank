@@ -2,43 +2,212 @@
 
 A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom model support.
 
-## How to Install the mod
+> **Note:** This project may expand beyond a single oxygen tank in future updates and evolve into a larger content mod.
+>
+> **Note:** A mod name change is planned for a future release.
 
-1. unzip the downloaded file
+---
 
-2. Open the downloaded file and place all of the contents that is inside of the folder in the the folder that is named: AdaptiveAIOxygenTank inside of Subnautica\BepInEx\plugins
+## Table of Contents
 
-Here is a video that you can watch for a guide:
+* Features
+* Recipe
+* Compatibility
+* Installation
+* Startup Boot Sequence
+* Personality Modes
+* Voice Presets
+* Audio Settings
+* Alert Types
+* Emergency Oxygen Reserve
+* Audio Layout
+* Custom Voice Packs
+* Required Voice Files
+* Custom Model
+* Model Guidelines
+* Configuration
+* Configuration Reference
+* Performance Impact
+* Save Compatibility
+* Known Issues
+* Known Limitations
+* Troubleshooting
+* Roadmap
+* FAQ
+* Credits
+* License
 
-https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a
+---
+
+## Compatibility
+
+Supported:
+
+* Subnautica (Steam version only)
+* BepInEx Pack for Subnautica
+* Nautilus
+
+Optional:
+
+* CustomCraft3
+* Modification Station Mk2
+
+Tested on:
+
+* Windows 10
+* Windows 11
+* Steam version of Subnautica
+
+> **Important:** This mod has only been tested on the Steam version of Subnautica.
+
+---
+
+## How to Install the Mod
+
+1. Download the latest release.
+2. Extract the downloaded `.zip` file.
+3. Open the extracted folder.
+4. Copy all contents into:
+
+```text
+Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
+```
+
+Here is a video installation guide:
+
+[https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
+
+---
 
 ## Features
 
-- 475 O2 capacity.
-- Unlocks from the Modification Station blueprint.
-- Craftable at the Modification Station.
-- Supports CustomCraft3 / Modification Station Mk2 as an optional dependency.
-- Six built-in voice variants: robotic male, robotic female, American male, American female, British male, British female.
-- OGG primary audio with matching WAV fallback/editing files.
-- Packed audio archive loaded by the mod at runtime.
-- Supplemental sound effects for warnings, startup, telemetry, and threats.
-- Optional custom Unity AssetBundle tank model.
-- Configurable voice, gender, personality mode, preset, volumes, and alert toggles.
-- Emergency oxygen reserve that can activate once per full refill.
+* 475 O2 capacity.
+* Unlocks from the Modification Station blueprint.
+* Craftable at the Modification Station.
+* Supports CustomCraft3 / Modification Station Mk2 as an optional dependency.
+* Six built-in voice variants:
+
+  * Robotic Male
+  * Robotic Female
+  * American Male
+  * American Female
+  * British Male
+  * British Female
+* Multiple personality modes.
+* Preset system for saving configurations.
+* OGG primary audio with matching WAV fallback and editing files.
+* Packed audio archive loaded by the mod at runtime.
+* Supplemental sound effects for warnings, startup, telemetry, and threats.
+* Optional custom Unity AssetBundle tank model.
+* Configurable voice, gender, personality mode, preset, volumes, and alert toggles.
+* Emergency oxygen reserve that can activate once per full refill.
+* Independent volume sliders for different audio categories.
+* Support for custom voice packs.
+* Safe to add or remove from existing saves.
+
+---
 
 ## Recipe
 
-| Ingredient | Quantity |
-|---|---:|
-| Titanium Ingot | 1 |
-| Plasteel Ingot | 1 |
-| Lithium | 2 |
-| Silver Ore | 2 |
-| Gold | 2 |
-| Magnetite | 2 |
-| Computer Chip | 1 |
-| Advanced Wiring Kit | 2 |
-| Power Cell | 1 |
+| Ingredient          | Quantity |
+| ------------------- | -------: |
+| Titanium Ingot      |        1 |
+| Plasteel Ingot      |        1 |
+| Lithium             |        2 |
+| Silver Ore          |        2 |
+| Gold                |        2 |
+| Magnetite           |        2 |
+| Computer Chip       |        1 |
+| Advanced Wiring Kit |        2 |
+| Power Cell          |        1 |
+
+---
+
+## Startup Boot Sequence
+
+When the tank is equipped, the onboard AI can play a customizable startup sequence.
+
+Possible startup announcements include:
+
+* Power initialization
+* Oxygen sensor calibration
+* Systems diagnostics
+* Voice profile confirmation
+* Capacity report
+
+The startup sequence can be enabled, disabled, or replaced with custom audio.
+
+---
+
+## Personality Modes
+
+Personality modes change the wording, tone, and urgency of voice announcements.
+
+Examples:
+
+* Professional
+* Friendly
+* Scientific
+* Military
+* Calm
+* Sarcastic
+
+---
+
+## Voice Presets
+
+Presets store:
+
+* Selected voice
+* Personality mode
+* Volume levels
+* Enabled alerts
+* Reserve settings
+
+Users can create and switch between multiple saved presets.
+
+---
+
+## Audio Settings
+
+Separate volume controls are available for:
+
+* Master volume
+* Voice lines
+* Startup sequence
+* Warning alerts
+* Threat alerts
+* Ambient sound effects
+
+---
+
+## Alert Types
+
+The tank can announce:
+
+* Equip and unequip
+* Oxygen percentage thresholds
+* Rapid oxygen loss
+* Entering dangerous biomes
+* Predator proximity
+* Low health
+* Reserve activation
+* Refill completion
+
+---
+
+## Emergency Oxygen Reserve
+
+When the main oxygen supply is depleted, the tank can automatically activate a one-time emergency reserve.
+
+Features:
+
+* Activates once per full refill.
+* Configurable reserve amount.
+* Spoken activation announcement.
+* Optional warning tones.
+
+---
 
 ## Audio Layout
 
@@ -49,7 +218,17 @@ Audio/VoiceLines/OGG/robotic_female/
 Audio/VoiceLines/WAV/robotic_female/
 ```
 
-Release builds do not include loose voice folders. Audio is stored in `Audio/Audio.pak`, a custom `AAO2PAK1` resource archive. The mod extracts it on first run, prefers OGG, and falls back to WAV.
+Release builds do not include loose voice folders.
+
+Audio is stored in:
+
+```text
+Audio/Audio.pak
+```
+
+This is a custom `AAO2PAK1` resource archive. The mod extracts it on first run, prefers OGG files, and falls back to WAV files.
+
+---
 
 ## Custom Voice Packs
 
@@ -59,7 +238,51 @@ Install voice packs under:
 Audio/CustomVoicePacks/PackName/
 ```
 
-Each pack should include `metadata.json`, matching `OGG` and `WAV` folders, and a preview sample. Set `VoicePackSelection = PackName` in `config/AdaptiveAIOxygenTank.cfg`.
+Each pack should include:
+
+* `metadata.json`
+* `OGG/`
+* `WAV/`
+* `preview.ogg`
+
+Set the active pack in:
+
+```text
+config/AdaptiveAIOxygenTank.cfg
+```
+
+```ini
+VoicePackSelection = PackName
+```
+
+### Example `metadata.json`
+
+```json
+{
+  "name": "HAL 9000",
+  "author": "ExampleUser",
+  "version": "1.0.0",
+  "description": "A calm and analytical voice pack.",
+  "preview": "preview.ogg"
+}
+```
+
+---
+
+## Required Voice Files
+
+Examples of commonly used voice lines:
+
+* `startup.ogg`
+* `oxygen_75.ogg`
+* `oxygen_50.ogg`
+* `oxygen_25.ogg`
+* `oxygen_10.ogg`
+* `oxygen_critical.ogg`
+* `reserve_activated.ogg`
+* `refill_complete.ogg`
+
+---
 
 ## Custom Model
 
@@ -69,11 +292,37 @@ Recommended runtime format: Unity AssetBundle.
 Assets/Models/adaptiveaioxygentank_model
 ```
 
-The bundle should contain a prefab named `TankModel`. FBX and OBJ are good source formats, but Subnautica cannot load them directly at runtime without converting them through Unity.
+The AssetBundle should contain a prefab named:
+
+```text
+TankModel
+```
+
+FBX and OBJ are excellent source formats, but they must be converted into a Unity AssetBundle before Subnautica can load them.
+
+---
+
+## Model Guidelines
+
+Recommended:
+
+* Under 10,000 triangles.
+* Single material where possible.
+* Pivot centered.
+* Correct scale.
+* Proper UV mapping.
+
+---
 
 ## Installation
 
-Copy the contents of `bin/Release/AdaptiveAIOxygenTank/` into:
+Copy the contents of:
+
+```text
+bin/Release/AdaptiveAIOxygenTank/
+```
+
+into:
 
 ```text
 Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
@@ -81,19 +330,22 @@ Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
 
 Required:
 
-- BepInEx Pack for Subnautica
-- Nautilus
+* BepInEx Pack for Subnautica
+* Nautilus
 
 Optional:
 
-- CustomCraft3 / Modification Station Mk2 support
+* CustomCraft3
+* Modification Station Mk2
+
+---
 
 ## Configuration
 
 Edit:
 
 ```text
-config/AdaptiveAIOxygenTank.cfg
+Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/config/AdaptiveAIOxygenTank.cfg
 ```
 
 Do not edit:
@@ -102,10 +354,126 @@ Do not edit:
 config/com.bipnx.subnautica.adaptiveaioxygentank.cfg
 ```
 
+---
+
+## Configuration Reference
+
+| Setting         | Description               |       Default |
+| --------------- | ------------------------- | ------------: |
+| TankCapacity    | Maximum oxygen capacity   |           475 |
+| EnableVoice     | Enables spoken alerts     |          true |
+| VoiceVariant    | Selected voice            | RoboticFemale |
+| PersonalityMode | AI personality mode       |  Professional |
+| EnableReserve   | Enables emergency reserve |          true |
+| ReserveAmount   | Emergency reserve oxygen  |            75 |
+
+---
+
+## Performance Impact
+
+The mod is designed to have minimal performance impact.
+
+* Audio is loaded on demand.
+* AssetBundles are cached.
+* Voice packs are validated at startup.
+* No measurable FPS impact under normal gameplay.
+
+---
+
+## Save Compatibility
+
+This mod is safe to add to or remove from existing saves.
+
+If the mod is removed while the tank is equipped, the item may disappear from your inventory.
+
+---
+
+## Known Issues
+
+1. The oxygen tank may occasionally play voice lines at unexpected times.
+2. The robotic voice may sometimes cut off before completing a full sentence.
+3. Some non-robotic voice variants may not play correctly.
+4. The mod may fail to read `AdaptiveAIOxygenTank.cfg`, causing the tank capacity to default to 520 O2 instead of the intended 475 O2.
+5. The mod may not appear in FMU (Find My Updates Mod).
+6. The mod may not appear in the in-game Mods menu, preventing configuration through the in-game interface.
+
+---
+
+## Known Limitations
+
+* Only one emergency reserve activation is available per full refill.
+* Custom models must be packaged as Unity AssetBundles.
+* Voice packs should include both OGG and WAV folders.
+
+---
+
 ## Troubleshooting
 
-- If audio is missing, delete `Audio/.audiopak_extracted` and restart the game so the pack extracts again.
-- If a custom model does not appear, verify the AssetBundle filename and prefab name match the config.
-- If a voice pack does not load, verify the folder name matches `VoicePackSelection`.
+* If audio is missing, delete `Audio/.audiopak_extracted` and restart the game.
+* If a custom model does not appear, verify the AssetBundle filename and prefab name.
+* If a voice pack does not load, verify the folder name matches `VoicePackSelection`.
+* If configuration changes do not apply, confirm you edited the correct config file.
 
-See `Docs/Credits.md` and `Docs/CHANGELOG.md` for release notes and credits.
+---
+
+## Roadmap
+
+Planned features:
+
+* Additional voice variants.
+* More personality modes.
+* HUD indicators.
+* Localization support.
+* Expanded gameplay content beyond oxygen tanks.
+
+---
+
+## FAQ
+
+### Can I use my own voice pack?
+
+Yes. Create a custom voice pack and place it in `Audio/CustomVoicePacks/`.
+
+### Can I disable spoken alerts?
+
+Yes. Voice announcements can be disabled in the config file.
+
+### Can I change the tank capacity?
+
+Yes. The capacity can be modified in `AdaptiveAIOxygenTank.cfg`.
+
+### Does this work with Subnautica: Below Zero?
+
+No. At this time, only the original Subnautica is supported.
+
+### Can I share my custom voice pack?
+
+Yes. Voice packs are designed to be easily shared with other players.
+
+---
+
+## Credits
+
+* Unknown Worlds Entertainment for creating Subnautica.
+* The BepInEx development team.
+* The Nautilus development team.
+* Voice contributors.
+* Community testers.
+
+See `Docs/Credits.md` for detailed credits.
+
+---
+
+## License
+
+Released under the MIT License.
+
+---
+
+## Additional Documentation
+
+* `Docs/CHANGELOG.md`
+* `Docs/Credits.md`
+* `Docs/VoicePackGuide.md`
+* `Docs/ModelGuide.md`
+* `Docs/ConfigurationReference.md`
