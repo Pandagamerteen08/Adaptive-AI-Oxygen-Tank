@@ -521,9 +521,10 @@ If the mod is removed while the tank is equipped, the item may disappear from yo
 1. The oxygen tank may occasionally play voice lines at unexpected times.
 2. The robotic voice may sometimes cut off before completing a full sentence.
 3. Some non-robotic voice variants may not play correctly.
-4. The mod may fail to read `AdaptiveAIOxygenTank.cfg`, causing the tank capacity to default to 520 O2 instead of the intended 475 O2. This will be fixed in the next major mod update.
+4. The mod may fail to read `AdaptiveAIOxygenTank.cfg`, causing the tank capacity to default to 520 O2 instead of the intended 475 O2.
 5. The mod may not appear in FMU (Find My Updates Mod).
 6. The mod may not appear in the in-game Mods menu, preventing configuration through the in-game interface.
+7. The mod plays a sfx (Sound Effect) when load into the world
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
