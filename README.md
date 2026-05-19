@@ -1,6 +1,6 @@
 # Advanced Robotic Voice Oxygen Tank
 
-A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom tank models.
+A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom models.
 
 > **Note:** This project may expand beyond a single oxygen tank in future updates and evolve into a larger content mod.
 >
@@ -12,34 +12,127 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 
 ## Table of Contents
 
-* [How I Do My Updates](#how-i-do-my-updates)
+### Getting Started
 * [Features](#features)
-* [Recipe](#recipe)
-* [Compatibility](#compatibility)
 * [How to Install the Mod](#how-to-install-the-mod)
+* [Compatibility](#compatibility)
+
+### Versioning
+* [Short Version](#short-version)
+* [Long Version](#long-version)
+
+### Features & Gameplay
 * [Startup Boot Sequence](#startup-boot-sequence)
 * [Personality Modes](#personality-modes)
 * [Voice Presets](#voice-presets)
 * [Audio Settings](#audio-settings)
 * [Alert Types](#alert-types)
 * [Emergency Oxygen Reserve](#emergency-oxygen-reserve)
-* [Audio Layout](#audio-layout)
+
+### Crafting & Balance
+* [Recipe](#recipe)
+
+### Customization
 * [Custom Voice Packs](#custom-voice-packs)
 * [Required Voice Files](#required-voice-files)
 * [Custom Model](#custom-model)
 * [Model Guidelines](#model-guidelines)
+* [Audio Layout](#audio-layout)
+
+### Configuration & Setup
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Configuration Reference](#configuration-reference)
+
+### Performance & Compatibility
 * [Performance Impact](#performance-impact)
 * [Save Compatibility](#save-compatibility)
+
+### Support & Documentation
 * [Known Issues](#known-issues)
 * [Known Limitations](#known-limitations)
 * [Troubleshooting](#troubleshooting)
-* [Roadmap](#roadmap)
 * [FAQ](#faq)
+
+### Project Information
+* [Roadmap](#roadmap)
 * [Credits](#credits)
 * [License](#license)
+* [Additional Documentation](#additional-documentation)
+
+---
+
+## Features
+
+* 475 O2 capacity.
+* Unlocks from the Modification Station blueprint.
+* Craftable at the Modification Station.
+* Supports CustomCraft3 / Modification Station Mk2 as an optional dependency.
+* Six built-in voice variants:
+
+  * Robotic Male
+  * Robotic Female
+  * American Male
+  * American Female
+  * British Male
+  * British Female
+* Multiple personality modes.
+* Preset system for saving configurations.
+* OGG primary audio with matching WAV fallback and editing files.
+* Packed audio archive loaded by the mod at runtime.
+* Supplemental sound effects for warnings, startup, telemetry, and threats.
+* Optional custom Unity AssetBundle tank model.
+* Configurable voice, gender, personality mode, preset, volumes, and alert toggles.
+* Emergency oxygen reserve that can activate once per full refill.
+* Independent volume sliders for different audio categories.
+* Support for custom voice packs.
+* Safe to add or remove from existing saves.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
+---
+
+## How to Install the Mod
+
+1. Download the latest release.
+2. Extract the downloaded `.zip` file.
+3. Open the extracted folder.
+4. Copy all contents into:
+
+```text
+Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
+```
+
+Here is a video installation guide:
+
+[https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
+---
+
+## Compatibility
+
+Supported:
+
+* Subnautica (Steam version only)
+* BepInEx Pack for Subnautica
+* Nautilus
+
+Optional:
+
+* CustomCraft3
+* Modification Station Mk2
+
+Tested on:
+
+* Windows 10
+* Windows 11
+* Steam version of Subnautica
+
+> **Important:** This mod has only been tested on the Steam version of Subnautica.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -58,8 +151,6 @@ This project follows semantic versioning to clearly communicate the nature of ea
 | **MINOR** | New features or content (backward compatible) | New voice packs, new personality modes |
 | **PATCH** | Bug fixes, balance tweaks, performance improvements | Fixed crash, adjusted reserve amount |
 | **TAG** | Pre-release versions (optional) | `-dev`, `-alpha`, `-beta`, `-rc` |
-
----
 
 ### Long Version
 
@@ -97,33 +188,7 @@ Allowed tags:
 Tags are appended using a hyphen.
 Example: v1.1.0-alpha
 
----
-
-## Features
-
-* 475 O2 capacity.
-* Unlocks from the Modification Station blueprint.
-* Craftable at the Modification Station.
-* Supports CustomCraft3 / Modification Station Mk2 as an optional dependency.
-* Six built-in voice variants:
-
-  * Robotic Male
-  * Robotic Female
-  * American Male
-  * American Female
-  * British Male
-  * British Female
-* Multiple personality modes.
-* Preset system for saving configurations.
-* OGG primary audio with matching WAV fallback and editing files.
-* Packed audio archive loaded by the mod at runtime.
-* Supplemental sound effects for warnings, startup, telemetry, and threats.
-* Optional custom Unity AssetBundle tank model.
-* Configurable voice, gender, personality mode, preset, volumes, and alert toggles.
-* Emergency oxygen reserve that can activate once per full refill.
-* Independent volume sliders for different audio categories.
-* Support for custom voice packs.
-* Safe to add or remove from existing saves.
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -142,45 +207,8 @@ Example: v1.1.0-alpha
 | Power Cell          |        1 |
 
 > **Note:** The crafting recipe is not final and may be adjusted for gameplay balance in future updates.
----
 
-## Compatibility
-
-Supported:
-
-* Subnautica (Steam version only)
-* BepInEx Pack for Subnautica
-* Nautilus
-
-Optional:
-
-* CustomCraft3
-* Modification Station Mk2
-
-Tested on:
-
-* Windows 10
-* Windows 11
-* Steam version of Subnautica
-
-> **Important:** This mod has only been tested on the Steam version of Subnautica.
-
----
-
-## How to Install the Mod
-
-1. Download the latest release.
-2. Extract the downloaded `.zip` file.
-3. Open the extracted folder.
-4. Copy all contents into:
-
-```text
-Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
-```
-
-Here is a video installation guide:
-
-[https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -198,6 +226,8 @@ Possible startup announcements include:
 
 The startup sequence can be enabled, disabled, or replaced with custom audio.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Personality Modes
@@ -213,6 +243,8 @@ Examples:
 * Calm
 * Sarcastic
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Voice Presets
@@ -227,6 +259,8 @@ Presets store:
 
 Users can create and switch between multiple saved presets.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Audio Settings
@@ -239,6 +273,8 @@ Separate volume controls are available for:
 * Warning alerts
 * Threat alerts
 * Ambient sound effects
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -255,6 +291,8 @@ The tank can announce:
 * Reserve activation
 * Refill completion
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Emergency Oxygen Reserve
@@ -267,6 +305,8 @@ Features:
 * Configurable reserve amount.
 * Spoken activation announcement.
 * Optional warning tones.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -288,6 +328,8 @@ Audio/Audio.pak
 ```
 
 This is a custom `AAO2PAK1` resource archive. The mod extracts it on first run, prefers OGG files, and falls back to WAV files.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -328,6 +370,8 @@ VoicePackSelection = PackName
 }
 ```
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Required Voice Files
@@ -342,6 +386,8 @@ Examples of commonly used voice lines:
 * `oxygen_critical.ogg`
 * `reserve_activated.ogg`
 * `refill_complete.ogg`
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -361,6 +407,8 @@ TankModel
 
 FBX and OBJ are excellent source formats, but they must be converted into a Unity AssetBundle before Subnautica can load them.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Model Guidelines
@@ -372,6 +420,8 @@ Recommended:
 * Pivot centered.
 * Correct scale.
 * Proper UV mapping.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -399,6 +449,8 @@ Optional:
 * CustomCraft3
 * Modification Station Mk2
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Configuration
@@ -415,6 +467,8 @@ Do not edit:
 config/com.bipnx.subnautica.adaptiveaioxygentank.cfg
 ```
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Configuration Reference
@@ -428,6 +482,8 @@ config/com.bipnx.subnautica.adaptiveaioxygentank.cfg
 | EnableReserve   | Enables emergency reserve |          true |
 | ReserveAmount   | Emergency reserve oxygen  |            75 |
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Performance Impact
@@ -439,6 +495,8 @@ The mod is designed to have minimal performance impact.
 * Voice packs are validated at startup.
 * No measurable FPS impact under normal gameplay.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Save Compatibility
@@ -446,6 +504,8 @@ The mod is designed to have minimal performance impact.
 This mod is safe to add to or remove from existing saves.
 
 If the mod is removed while the tank is equipped, the item may disappear from your inventory.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -455,9 +515,10 @@ If the mod is removed while the tank is equipped, the item may disappear from yo
 2. The robotic voice may sometimes cut off before completing a full sentence.
 3. Some non-robotic voice variants may not play correctly.
 4. The mod may fail to read `AdaptiveAIOxygenTank.cfg`, causing the tank capacity to default to 520 O2 instead of the intended 475 O2. This will be fixed in the next major mod update.
-
 5. The mod may not appear in FMU (Find My Updates Mod).
 6. The mod may not appear in the in-game Mods menu, preventing configuration through the in-game interface.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -466,6 +527,8 @@ If the mod is removed while the tank is equipped, the item may disappear from yo
 * Only one emergency reserve activation is available per full refill.
 * Custom models must be packaged as Unity AssetBundles.
 * Voice packs should include both OGG and WAV folders.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -476,17 +539,7 @@ If the mod is removed while the tank is equipped, the item may disappear from yo
 * If a voice pack does not load, verify the folder name matches `VoicePackSelection`.
 * If configuration changes do not apply, confirm you edited the correct config file.
 
----
-
-## Roadmap
-
-Planned features:
-
-* Additional voice variants.
-* More personality modes.
-* HUD indicators.
-* Localization support.
-* Expanded gameplay content beyond oxygen tanks.
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
 ---
 
@@ -512,6 +565,22 @@ No. At this time, only the original Subnautica is supported.
 
 Yes. Voice packs are designed to be easily shared with other players.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
+---
+
+## Roadmap
+
+Planned features:
+
+* Additional voice variants.
+* More personality modes.
+* HUD indicators.
+* Localization support.
+* Expanded gameplay content beyond oxygen tanks.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Credits
@@ -524,18 +593,37 @@ Yes. Voice packs are designed to be easily shared with other players.
 
 See `Docs/Credits.md` for detailed credits.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## License
 
 Released under the MIT License.
 
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
 ---
 
 ## Additional Documentation
 
-* `Docs/CHANGELOG.md`
-* `Docs/Credits.md`
-* `Docs/VoicePackGuide.md`
-* `Docs/ModelGuide.md`
-* `Docs/ConfigurationReference.md`
+The following additional guides are available in the `Docs/` directory:
+
+### User Guides
+* **[Docs/CHANGELOG.md](Docs/CHANGELOG.md)** - Complete version history and release notes
+* **[Docs/VoicePackGuide.md](Docs/VoicePackGuide.md)** - Detailed guide for creating and installing custom voice packs
+* **[Docs/ModelGuide.md](Docs/ModelGuide.md)** - Comprehensive guide for creating custom tank models
+* **[Docs/ConfigurationReference.md](Docs/ConfigurationReference.md)** - Extended configuration options and advanced settings
+
+### Project Documentation
+* **[Docs/METADATA.md](Docs/METADATA.md)** - Project metadata and overview
+* **[Docs/PROJECT_STRUCTURE.md](Docs/PROJECT_STRUCTURE.md)** - Directory and file organization
+
+### Developer Documentation (Coming Soon)
+* **CONTRIBUTING.md** - Guidelines for contributing to the project
+* **ARCHITECTURE.md** - System design and architecture overview
+* **API_REFERENCE.md** - Public API documentation
+
+For more information, visit the **[Docs/README.md](Docs/README.md)** directory.
+
+[⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
