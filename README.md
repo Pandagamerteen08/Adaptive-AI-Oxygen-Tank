@@ -16,6 +16,7 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 * [Features](#features)
 * [How to Install the Mod](#how-to-install-the-mod)
 * [Compatibility](#compatibility)
+* [File(s) you can Safely Remove Upon Download](#File(s)-you-can-safely-remove-upon-ownload)
 
 ### Versioning
 * [Short Version](#short-version)
@@ -126,13 +127,19 @@ Optional:
 
 Tested on:
 
-* Windows 10
-* Windows 11
+* Windows 10 (This mod has **NOT** been tested on Windows 10)
+* Windows 11 (This mod has been tested on Windows 11)
 * Steam version of Subnautica
 
 > **Important:** This mod has only been tested on the Steam version of Subnautica.
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
+
+## File(s) you can Safely Remove Upon Download
+
+**You can safely remove the Following file(s)**
+
+.github/ISSUE_TEMPLATE
 
 ---
 
