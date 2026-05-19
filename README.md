@@ -1,6 +1,6 @@
 # Advanced Robotic Voice Oxygen Tank
 
-A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom model support.
+A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen tank with spoken alerts, configurable voice variants, emergency reserve behavior, custom audio packs, and optional custom tank models.
 
 > **Note:** This project may expand beyond a single oxygen tank in future updates and evolve into a larger content mod.
 >
@@ -10,72 +10,33 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 
 ## Table of Contents
 
-* Features
-* Recipe
-* Compatibility
-* Installation
-* Startup Boot Sequence
-* Personality Modes
-* Voice Presets
-* Audio Settings
-* Alert Types
-* Emergency Oxygen Reserve
-* Audio Layout
-* Custom Voice Packs
-* Required Voice Files
-* Custom Model
-* Model Guidelines
-* Configuration
-* Configuration Reference
-* Performance Impact
-* Save Compatibility
-* Known Issues
-* Known Limitations
-* Troubleshooting
-* Roadmap
-* FAQ
-* Credits
-* License
-
----
-
-## Compatibility
-
-Supported:
-
-* Subnautica (Steam version only)
-* BepInEx Pack for Subnautica
-* Nautilus
-
-Optional:
-
-* CustomCraft3
-* Modification Station Mk2
-
-Tested on:
-
-* Windows 10
-* Windows 11
-* Steam version of Subnautica
-
-> **Important:** This mod has only been tested on the Steam version of Subnautica.
-
----
-
-## How to Install the Mod
-
-1. Download the latest release.
-2. Extract the downloaded `.zip` file.
-3. Open the extracted folder.
-4. Copy all contents into:
-
-```text
-Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
-```
-
-Here is a video installation guide:
-
-[https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
+* [Features](#features)
+* [Recipe](#recipe)
+* [Compatibility](#compatibility)
+* [How to Install the Mod](#how-to-install-the-mod)
+* [Startup Boot Sequence](#startup-boot-sequence)
+* [Personality Modes](#personality-modes)
+* [Voice Presets](#voice-presets)
+* [Audio Settings](#audio-settings)
+* [Alert Types](#alert-types)
+* [Emergency Oxygen Reserve](#emergency-oxygen-reserve)
+* [Audio Layout](#audio-layout)
+* [Custom Voice Packs](#custom-voice-packs)
+* [Required Voice Files](#required-voice-files)
+* [Custom Model](#custom-model)
+* [Model Guidelines](#model-guidelines)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Configuration Reference](#configuration-reference)
+* [Performance Impact](#performance-impact)
+* [Save Compatibility](#save-compatibility)
+* [Known Issues](#known-issues)
+* [Known Limitations](#known-limitations)
+* [Troubleshooting](#troubleshooting)
+* [Roadmap](#roadmap)
+* [FAQ](#faq)
+* [Credits](#credits)
+* [License](#license)
 
 ---
 
@@ -120,6 +81,46 @@ Here is a video installation guide:
 | Computer Chip       |        1 |
 | Advanced Wiring Kit |        2 |
 | Power Cell          |        1 |
+
+---
+
+## Compatibility
+
+Supported:
+
+* Subnautica (Steam version only)
+* BepInEx Pack for Subnautica
+* Nautilus
+
+Optional:
+
+* CustomCraft3
+* Modification Station Mk2
+
+Tested on:
+
+* Windows 10
+* Windows 11
+* Steam version of Subnautica
+
+> **Important:** This mod has only been tested on the Steam version of Subnautica.
+
+---
+
+## How to Install the Mod
+
+1. Download the latest release.
+2. Extract the downloaded `.zip` file.
+3. Open the extracted folder.
+4. Copy all contents into:
+
+```text
+Subnautica/BepInEx/plugins/AdaptiveAIOxygenTank/
+```
+
+Here is a video installation guide:
+
+[https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a](https://github.com/user-attachments/assets/0af8329c-092e-49c6-801d-1602caec446a)
 
 ---
 
