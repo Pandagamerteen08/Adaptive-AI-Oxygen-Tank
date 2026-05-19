@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1
+
+- Bug fixes and stability improvements.
+- Enhanced error handling for audio pack extraction.
+- Improved configuration validation.
+- Minor performance optimizations.
+
 ## 1.2.0
 
 - Renamed the in-game item to Advanced Robotic Voice Oxygen Tank.
