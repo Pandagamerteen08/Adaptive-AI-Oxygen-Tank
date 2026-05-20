@@ -591,7 +591,9 @@ Planned features:
 * HUD indicators.
 * Localization support.
 * Expanded gameplay content beyond oxygen tanks.
-*  More Languages Check the Localization folder for the languages that will be added + more in the future
+* More Languages Check the Localization folder for the languages that will be added + more in the future
+* Add another island with it's very own story line
+* Pressing a button for a different dive mode
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
