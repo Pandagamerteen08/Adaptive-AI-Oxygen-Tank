@@ -16,7 +16,7 @@ A Subnautica BepInEx / Nautilus mod that adds a high-capacity AI-assisted oxygen
 * [Features](#features)
 * [How to Install the Mod](#how-to-install-the-mod)
 * [Compatibility](#compatibility)
-* [File(s) you can Safely Remove Upon Download](#File(s)-that-you-can-safely-remove-upon-ownload)
+* [File(s) you can Safely Remove Upon Download](#Files-you-can-safely-remove-upon-ownload)
 
 ### Versioning
 * [Short Version](#short-version)
@@ -137,7 +137,7 @@ Tested on:
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
-## File(s) that you can Safely Remove Upon Download
+## Files you can Safely Remove Upon Download
 
 **You can safely remove the Following file(s)**
 
