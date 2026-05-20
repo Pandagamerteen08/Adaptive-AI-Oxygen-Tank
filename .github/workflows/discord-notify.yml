@@ -1,120 +1,152 @@
-- name: Aggregate commits and build Discord payload
-  env:
-    DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-    REPO: ${{ github.repository }}
-  run: |
-    set -euo pipefail
+name: Aggregate Commit Batches and Notify Discord
 
-    if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
-      echo "ERROR: DISCORD_WEBHOOK_URL secret is not set."
-      exit 1
-    fi
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
-    if ! compgen -G "batches/*.json" > /dev/null; then
-      echo "No batch files found in batches/. Nothing to post."
-      exit 0
-    fi
+jobs:
+  aggregate-and-notify:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
-    COUNT=0
-    DESC=""
-    FIRST_URL=""
-    FIRST_AUTHOR_NAME=""
-    FIRST_AUTHOR_URL=""
-    FIRST_AUTHOR_AVATAR=""
-    FIRST_SET=0
+    steps:
+      - name: Download all commit-batch artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: batches
 
-    for f in batches/*.json; do
-      while IFS= read -r commit; do
-        HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
-        SHORT=${HASH:0:7}
-        MSG=$(echo "$commit" | jq -r '.message' | head -n1 | sed 's/"/\\"/g')
-        URL=$(echo "$commit" | jq -r '.url // empty')
-        AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
+      - name: List batches folder (debug)
+        run: |
+          echo "batches folder content:"
+          ls -la batches || true
 
-        # Try to derive GitHub profile URL and avatar URL
-        AUTHOR_USERNAME=$(echo "$commit" | jq -r '.author.username // .author.name // .author // empty')
+      - name: Aggregate commits and build Discord payload
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
 
-        if [ -n "$AUTHOR_USERNAME" ] && [ "$AUTHOR_USERNAME" != "null" ]; then
-          AUTHOR_URL="https://github.com/$AUTHOR_USERNAME"
-          AUTHOR_AVATAR="https://github.com/$AUTHOR_USERNAME.png"
-        else
-          AUTHOR_URL=""
-          AUTHOR_AVATAR=""
-        fi
+          if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+            echo "ERROR: DISCORD_WEBHOOK_URL secret is not set."
+            exit 1
+          fi
 
-        if [ $FIRST_SET -eq 0 ]; then
-          FIRST_URL="$URL"
-          FIRST_AUTHOR_NAME="$AUTH"
-          FIRST_AUTHOR_URL="$AUTHOR_URL"
-          FIRST_AUTHOR_AVATAR="$AUTHOR_AVATAR"
-          FIRST_SET=1
-        fi
+          if ! compgen -G "batches/*.json" > /dev/null; then
+            echo "No batch files found in batches/. Nothing to post."
+            exit 0
+          fi
 
-        if [ -n "$URL" ]; then
-          DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
-        else
-          DESC+="\`$SHORT\` $MSG - $AUTH\n"
-        fi
+          COUNT=0
+          DESC=""
+          FIRST_URL=""
+          FIRST_AUTHOR_NAME=""
+          FIRST_AUTHOR_URL=""
+          FIRST_AUTHOR_AVATAR=""
+          FIRST_SET=0
 
-        DESC+="\n"
-        COUNT=$((COUNT+1))
-      done < <(jq -c '.commits[]' "$f")
-    done
+          for f in batches/*.json; do
+            while IFS= read -r commit; do
+              HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
+              SHORT=${HASH:0:7}
+              MSG=$(echo "$commit" | jq -r '.message' | head -n1 | sed 's/"/\\"/g')
+              URL=$(echo "$commit" | jq -r '.url // empty')
+              AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
 
-    MAX_CHARS=4000
-    if [ ${#DESC} -gt $MAX_CHARS ]; then
-      DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
-    fi
+              AUTHOR_USERNAME=$(echo "$commit" | jq -r '.author.username // .author.name // .author // empty')
 
-    if [ "$COUNT" -eq 1 ]; then
-      TITLE="[$REPO] 1 new commit"
-    else
-      TITLE="[$REPO] ${COUNT} new commits"
-    fi
+              if [ -n "$AUTHOR_USERNAME" ] && [ "$AUTHOR_USERNAME" != "null" ]; then
+                AUTHOR_URL="https://github.com/$AUTHOR_USERNAME"
+                AUTHOR_AVATAR="https://github.com/$AUTHOR_USERNAME.png"
+              else
+                AUTHOR_URL=""
+                AUTHOR_AVATAR=""
+              fi
 
-    PAYLOAD=$(jq -n \
-      --arg title "$TITLE" \
-      --arg desc "$DESC" \
-      --arg url "$FIRST_URL" \
-      --arg author_name "$FIRST_AUTHOR_NAME" \
-      --arg author_url "$FIRST_AUTHOR_URL" \
-      --arg author_icon "$FIRST_AUTHOR_AVATAR" \
-      '{
-        embeds: [
-          {
-            title: $title,
-            description: $desc,
-            url: (if $url == "" then null else $url end),
-            author: {
-              name: $author_name,
-              url: (if $author_url == "" then null else $author_url end),
-              icon_url: (if $author_icon == "" then null else $author_icon end)
-            },
-            color: 5814783
-          }
-        ]
-      }')
+              if [ $FIRST_SET -eq 0 ]; then
+                FIRST_URL="$URL"
+                FIRST_AUTHOR_NAME="$AUTH"
+                FIRST_AUTHOR_URL="$AUTHOR_URL"
+                FIRST_AUTHOR_AVATAR="$AUTHOR_AVATAR"
+                FIRST_SET=1
+              fi
 
-    echo "Payload to send:"
-    echo "$PAYLOAD"
+              if [ -n "$URL" ]; then
+                DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
+              else
+                DESC+="\`$SHORT\` $MSG - $AUTH\n"
+              fi
 
-    echo "$PAYLOAD" > payload.json
+              DESC+="\n"
+              COUNT=$((COUNT + 1))
+            done < <(jq -c '.commits[]' "$f")
+          done
 
-    HTTP_RESPONSE=$(curl -sS -w "HTTPSTATUS:%{http_code}" \
-      -H "Content-Type: application/json" \
-      -X POST \
-      --data-binary @payload.json \
-      "$DISCORD_WEBHOOK_URL" || true)
+          MAX_CHARS=4000
+          if [ ${#DESC} -gt $MAX_CHARS ]; then
+            DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
+          fi
 
-    HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
-    HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          if [ "$COUNT" -eq 1 ]; then
+            TITLE="[$REPO] 1 new commit"
+          else
+            TITLE="[$REPO] ${COUNT} new commits"
+          fi
 
-    echo "curl HTTP status: $HTTP_STATUS"
-    echo "curl response body: $HTTP_BODY"
+          PAYLOAD=$(jq -n \
+            --arg title "$TITLE" \
+            --arg desc "$DESC" \
+            --arg url "$FIRST_URL" \
+            --arg author_name "$FIRST_AUTHOR_NAME" \
+            --arg author_url "$FIRST_AUTHOR_URL" \
+            --arg author_icon "$FIRST_AUTHOR_AVATAR" \
+            '{
+              embeds: [
+                {
+                  title: $title,
+                  description: $desc,
+                  url: (if $url == "" then null else $url end),
+                  author: {
+                    name: $author_name,
+                    url: (if $author_url == "" then null else $author_url end),
+                    icon_url: (if $author_icon == "" then null else $author_icon end)
+                  },
+                  color: 5814783
+                }
+              ]
+            }')
 
-    if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-      echo "Posted $COUNT commits to Discord successfully."
-    else
-      echo "Failed to post to Discord (status $HTTP_STATUS)."
-      exit 1
-    fi
+          echo "Payload to send:"
+          echo "$PAYLOAD"
+
+          echo "$PAYLOAD" > payload.json
+
+          HTTP_RESPONSE=$(curl -sS -w "HTTPSTATUS:%{http_code}" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            --data-binary @payload.json \
+            "$DISCORD_WEBHOOK_URL" || true)
+
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
+          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+          echo "curl HTTP status: $HTTP_STATUS"
+          echo "curl response body: $HTTP_BODY"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Posted $COUNT commits to Discord successfully."
+          else
+            echo "Failed to post to Discord (status $HTTP_STATUS)."
+            exit 1
+          fi
+
+      - name: Cleanup commit-batch artifacts
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: commit-batch-*
+          useGlob: true
+          failOnError: false
