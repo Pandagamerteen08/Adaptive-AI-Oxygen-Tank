@@ -113,5 +113,5 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: commit-batch-*
-          use_glob: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          useGlob: true
+          failOnError: false
