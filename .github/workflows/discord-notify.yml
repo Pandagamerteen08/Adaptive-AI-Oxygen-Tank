@@ -1,94 +1,101 @@
-name: Aggregate Commit Batches and Notify Discord
+  - name: List batches folder (debug)
+    run: |
+      echo "batches folder content:"
+      ls -la batches || true
 
-on:
-  workflow_dispatch:        # manual trigger for immediate posting
-  push:                    # optional: trigger on every push to main branch
-    branches:
-      - main
-
-jobs:
-  aggregate-and-notify:
-    runs-on: ubuntu-latest
+  - name: Aggregate commits and build Discord payload
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    steps:
-      - name: Download all commit-batch artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: batches
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      REPO: ${{ github.repository }}
+    run: |
+      set -euo pipefail
+      # bail early if webhook missing
+      if [ -z "${DISCORD_WEBHOOK_URL:-}" ]; then
+        echo "ERROR: DISCORD_WEBHOOK_URL secret is not set. Exiting."
+        exit 1
+      fi
 
-      - name: Check for batch files
-        id: check
-        run: |
-          if compgen -G "batches/*.json" > /dev/null; then
-            echo "has_files=true" >> $GITHUB_OUTPUT
+      # check for files
+      if ! compgen -G "batches/*.json" > /dev/null; then
+        echo "No batch files found in batches/. Nothing to post."
+        exit 0
+      fi
+
+      COUNT=0
+      DESC=""
+      FIRST_URL=""
+      FIRST_AUTHOR_NAME=""
+      FIRST_SET=0
+
+      for f in batches/*.json; do
+        # use process substitution so variables persist in outer shell
+        while IFS= read -r commit; do
+          HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
+          SHORT=${HASH:0:7}
+          MSG=$(echo "$commit" | jq -r '.message' | sed -E ':a;N;s/\n/ /g;ta' | sed 's/"/\\"/g')
+          URL=$(echo "$commit" | jq -r '.url // empty')
+          AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
+          ADDED=$(echo "$commit" | jq -r '.added | join(", ") // empty')
+          MODIFIED=$(echo "$commit" | jq -r '.modified | join(", ") // empty')
+          REMOVED=$(echo "$commit" | jq -r '.removed | join(", ") // empty')
+
+          if [ $FIRST_SET -eq 0 ]; then
+            FIRST_URL="$URL"
+            FIRST_AUTHOR_NAME="$AUTH"
+            FIRST_SET=1
+          fi
+
+          if [ -n "$URL" ]; then
+            DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
           else
-            echo "has_files=false" >> $GITHUB_OUTPUT
+            DESC+="\`$SHORT\` $MSG - $AUTH\n"
           fi
 
-      - name: Aggregate commits and build Discord payload
-        if: steps.check.outputs.has_files == 'true'
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          COUNT=0
-          DESC=""
-          for f in batches/*.json; do
-            jq -c '.commits[]' "$f" | while read -r commit; do
-              HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
-              SHORT=${HASH:0:7}
-              MSG=$(echo "$commit" | jq -r '.message' | sed -E ':a;N;s/\n/ /g;ta' | sed 's/"/\\"/g')
-              URL=$(echo "$commit" | jq -r '.url // empty')
-              AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
-              ADDED=$(echo "$commit" | jq -r '.added | join(", ") // empty')
-              MODIFIED=$(echo "$commit" | jq -r '.modified | join(", ") // empty')
-              REMOVED=$(echo "$commit" | jq -r '.removed | join(", ") // empty')
+          [ -n "$ADDED" ] && DESC+="• Added: $ADDED\n"
+          [ -n "$MODIFIED" ] && DESC+="• Modified: $MODIFIED\n"
+          [ -n "$REMOVED" ] && DESC+="• Removed: $REMOVED\n"
 
-              if [ -n "$URL" ]; then
-                DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
-              else
-                DESC+="\`$SHORT\` $MSG - $AUTH\n"
-              fi
+          DESC+="\n"
+          COUNT=$((COUNT+1))
+        done < <(jq -c '.commits[]' "$f")
+      done
 
-              if [ -n "$ADDED" ]; then
-                DESC+="• Added: $ADDED\n"
-              fi
-              if [ -n "$MODIFIED" ]; then
-                DESC+="• Modified: $MODIFIED\n"
-              fi
-              if [ -n "$REMOVED" ]; then
-                DESC+="• Removed: $REMOVED\n"
-              fi
+      MAX_CHARS=4000
+      if [ ${#DESC} -gt $MAX_CHARS ]; then
+        DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
+      fi
 
-              DESC+="\n"
-              COUNT=$((COUNT+1))
-            done
-          done
+      TITLE="[$REPO] ${COUNT} new commit(s)"
+      PAYLOAD=$(jq -n --arg title "$TITLE" --arg desc "$DESC" --arg url "$FIRST_URL" '{
+        embeds: [{
+          title: $title,
+          description: $desc,
+          url: (if $url == "" then null else $url end),
+          color: 5814783
+        }]
+      }')
 
-          MAX_CHARS=4000
-          if [ ${#DESC} -gt $MAX_CHARS ]; then
-            DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
-          fi
+      echo "Payload to send:"
+      echo "$PAYLOAD"
 
-          TITLE="[$REPO] ${COUNT} new commit(s)"
-          PAYLOAD=$(jq -n --arg title "$TITLE" --arg desc "$DESC" '{
-            embeds: [{
-              title: $title,
-              description: $desc,
-              color: 5814783
-            }]
-          }')
+      echo "$PAYLOAD" > payload.json
+      # Post and show HTTP status and response for debugging
+      HTTP_RESPONSE=$(curl -sS -w "HTTPSTATUS:%{http_code}" -H "Content-Type: application/json" -X POST --data-binary @payload.json "$DISCORD_WEBHOOK_URL" || true)
+      HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
+      HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+      echo "curl HTTP status: $HTTP_STATUS"
+      echo "curl response body: $HTTP_BODY"
+      if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+        echo "Posted $COUNT commits to Discord successfully."
+      else
+        echo "Failed to post to Discord (status $HTTP_STATUS)."
+        exit 1
+      fi
 
-          echo "$PAYLOAD" > payload.json
-          curl -sS -H "Content-Type: application/json" -X POST --data-binary @payload.json "$DISCORD_WEBHOOK_URL"
-          echo "Posted $COUNT commits to Discord."
-
-      - name: Cleanup commit-batch artifacts
-        if: steps.check.outputs.has_files == 'true'
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: commit-batch-*
-          use_glob: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+  - name: Cleanup commit-batch artifacts (delete from repository artifacts list)
+    if: always()
+    uses: geekyeggo/delete-artifact@v5
+    with:
+      name: commit-batch-*
+      use_glob: true
+      token: ${{ secrets.GITHUB_TOKEN }}
