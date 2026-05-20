@@ -1,21 +1,21 @@
 name: Aggregate Commit Batches and Notify Discord
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:        # manual trigger for testing
+  workflow_dispatch:        # manual trigger for immediate posting
+  push:                    # optional: trigger on every push to main branch
+    branches:
+      - main
 
 jobs:
   aggregate-and-notify:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # Opt into Node.js 24 for JS actions
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Download all commit-batch artifacts
         uses: actions/download-artifact@v4
         with:
           path: batches
-          # downloads all artifacts; artifacts from recent pushes will appear here
 
       - name: Check for batch files
         id: check
@@ -35,9 +35,7 @@ jobs:
           set -euo pipefail
           COUNT=0
           DESC=""
-          # Iterate all batch files and their commits
           for f in batches/*.json; do
-            # For each commit object in the file
             jq -c '.commits[]' "$f" | while read -r commit; do
               HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
               SHORT=${HASH:0:7}
@@ -48,7 +46,6 @@ jobs:
               MODIFIED=$(echo "$commit" | jq -r '.modified | join(", ") // empty')
               REMOVED=$(echo "$commit" | jq -r '.removed | join(", ") // empty')
 
-              # Build a readable section for this commit
               if [ -n "$URL" ]; then
                 DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
               else
@@ -70,14 +67,12 @@ jobs:
             done
           done
 
-          # Optional: limit message size to avoid Discord limits (truncate description if necessary)
           MAX_CHARS=4000
           if [ ${#DESC} -gt $MAX_CHARS ]; then
             DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
           fi
 
-          TITLE="[$REPO] ${COUNT} new commit(s) in the last 5 minutes"
-          # Create payload JSON safely with jq
+          TITLE="[$REPO] ${COUNT} new commit(s)"
           PAYLOAD=$(jq -n --arg title "$TITLE" --arg desc "$DESC" '{
             embeds: [{
               title: $title,
@@ -87,11 +82,10 @@ jobs:
           }')
 
           echo "$PAYLOAD" > payload.json
-          # Send to Discord
           curl -sS -H "Content-Type: application/json" -X POST --data-binary @payload.json "$DISCORD_WEBHOOK_URL"
           echo "Posted $COUNT commits to Discord."
 
-      - name: Cleanup commit-batch artifacts (delete from repository artifacts list)
+      - name: Cleanup commit-batch artifacts
         if: steps.check.outputs.has_files == 'true'
         uses: geekyeggo/delete-artifact@v5
         with:
