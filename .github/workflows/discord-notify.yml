@@ -9,6 +9,9 @@ on:
 jobs:
   aggregate-and-notify:
     runs-on: ubuntu-latest
+
+    # Force JavaScript-based GitHub Actions to run on Node.js 24.
+    # This removes the "Node.js 20 is deprecated" warning.
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -17,6 +20,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: batches
+          pattern: commit-batch-*
+          merge-multiple: true
 
       - name: List batches folder (debug)
         run: |
@@ -27,6 +32,7 @@ jobs:
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           REPO: ${{ github.repository }}
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -51,12 +57,13 @@ jobs:
           for f in batches/*.json; do
             while IFS= read -r commit; do
               HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
+              [ -z "$HASH" ] && continue
+
               SHORT=${HASH:0:7}
-              MSG=$(echo "$commit" | jq -r '.message' | head -n1 | sed 's/"/\\"/g')
+              MSG=$(echo "$commit" | jq -r '.message // ""' | head -n1 | sed 's/"/\\"/g')
               URL=$(echo "$commit" | jq -r '.url // empty')
               AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
-
-              AUTHOR_USERNAME=$(echo "$commit" | jq -r '.author.username // .author.name // .author // empty')
+              AUTHOR_USERNAME=$(echo "$commit" | jq -r '.author.username // empty')
 
               if [ -n "$AUTHOR_USERNAME" ] && [ "$AUTHOR_USERNAME" != "null" ]; then
                 AUTHOR_URL="https://github.com/$AUTHOR_USERNAME"
@@ -66,7 +73,7 @@ jobs:
                 AUTHOR_AVATAR=""
               fi
 
-              if [ $FIRST_SET -eq 0 ]; then
+              if [ "$FIRST_SET" -eq 0 ]; then
                 FIRST_URL="$URL"
                 FIRST_AUTHOR_NAME="$AUTH"
                 FIRST_AUTHOR_URL="$AUTHOR_URL"
@@ -75,25 +82,31 @@ jobs:
               fi
 
               if [ -n "$URL" ]; then
-                DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH\n"
+                DESC+="[\`$SHORT\`]($URL) $MSG - $AUTH"$'\n'
               else
-                DESC+="\`$SHORT\` $MSG - $AUTH\n"
+                DESC+="\`$SHORT\` $MSG - $AUTH"$'\n'
               fi
 
-              DESC+="\n"
+              DESC+=$'\n'
               COUNT=$((COUNT + 1))
-            done < <(jq -c '.commits[]' "$f")
+            done < <(jq -c '.commits[]?' "$f")
           done
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No commits found in batch files."
+            exit 0
+          fi
 
           MAX_CHARS=4000
           if [ ${#DESC} -gt $MAX_CHARS ]; then
-            DESC="${DESC:0:$MAX_CHARS}\n\n(Truncated - too many commits/details)"
+            DESC="${DESC:0:$MAX_CHARS}"
+            DESC+=$'\n\n(Truncated - too many commits/details)'
           fi
 
           if [ "$COUNT" -eq 1 ]; then
             TITLE="[$REPO] 1 new commit"
           else
-            TITLE="[$REPO] ${COUNT} new commits"
+            TITLE="[$REPO] $COUNT new commits"
           fi
 
           PAYLOAD=$(jq -n \
