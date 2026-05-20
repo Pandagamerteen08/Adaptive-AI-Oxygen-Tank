@@ -594,6 +594,7 @@ Planned features:
 * More Languages Check the Localization folder for the languages that will be added + more in the future
 * Add another island with it's very own story line
 * Pressing a button for a different dive mode
+* A whole new story to the game
 
 [⬆️ Back to Top](#advanced-robotic-voice-oxygen-tank)
 
@@ -604,8 +605,6 @@ Planned features:
 * Unknown Worlds Entertainment for creating Subnautica.
 * The BepInEx development team.
 * The Nautilus development team.
-* Voice contributors.
-* Community testers.
 
 See `Docs/Credits.md` for detailed credits.
 
