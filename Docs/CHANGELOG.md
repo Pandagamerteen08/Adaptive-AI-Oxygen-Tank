@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.3
+
+# Audio
+
+- Temporarily deleted the Audio.pak located in Audio/Audio.pak (You couldn't/can't access a .pak file)
+
+# AdaptiveAIOxygenTank.cfg Changes
+
+- Changed the Default voice from Default: Robotic to Default: American
+- Changed the VoiceAccent from VoiceAccent = Robotic to VoiceAccent = American
+- Changed the SoundEffectsEnabled from SoundEffectsEnabled = true to SoundEffectsEnabled = false (Temporarily)
+- Changed the PlayAudioClips from PlayAudioClips = true to PlayAudioClips = false (Temporarily)
+- Changed the ShowTextAlerts from ShowTextAlerts = true to ShowTextAlerts = false (Temporarily)
+- Changed the AIVoiceEnabled from AIVoiceEnabled = true to AIVoiceEnabled = false (Temporarily)
+
+# Misc (Miscellaneous)
+
+- Updated the four new things to the Roadmap in the change log: The following were added;
+  - More Languages Check the Localization folder for the languages that will be added + more in the future
+  - Add another island with it's very own story line
+  - Pressing a button for a different dive mode
+  - A whole new story to the game
+
+- Changed a line in the README.md from Subnautica (Steam version only) to Subnautica (Tested on the Steam version only, but it will also most likly work on the Epic Games ver too!)
+
 ## 1.2.2
 
 - Added GitHub issue templates for bug reports and feature requests.
