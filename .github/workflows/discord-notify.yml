@@ -10,29 +10,27 @@ jobs:
   aggregate-and-notify:
     runs-on: ubuntu-latest
 
-    # Force JavaScript-based GitHub Actions to run on Node.js 24.
-    # This removes the "Node.js 20 is deprecated" warning.
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-      - name: Download all commit-batch artifacts
+      # Download all artifacts whose names start with "commit-batch-"
+      - name: Download commit batch artifacts
         uses: actions/download-artifact@v4
         with:
-          path: batches
           pattern: commit-batch-*
           merge-multiple: true
+          path: batches
 
-      - name: List batches folder (debug)
+      # Debug: show what was downloaded
+      - name: List downloaded files
         run: |
-          echo "batches folder content:"
-          ls -la batches || true
+          echo "Contents of batches/:"
+          ls -lah batches || true
 
-      - name: Aggregate commits and build Discord payload
+      # Build and send the Discord embed
+      - name: Aggregate commits and send Discord notification
+        shell: bash
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           REPO: ${{ github.repository }}
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -42,7 +40,7 @@ jobs:
           fi
 
           if ! compgen -G "batches/*.json" > /dev/null; then
-            echo "No batch files found in batches/. Nothing to post."
+            echo "No batch JSON files found."
             exit 0
           fi
 
@@ -55,22 +53,24 @@ jobs:
           FIRST_SET=0
 
           for f in batches/*.json; do
+            echo "Processing $f"
+
             while IFS= read -r commit; do
               HASH=$(echo "$commit" | jq -r '.id // .sha // empty')
               [ -z "$HASH" ] && continue
 
               SHORT=${HASH:0:7}
-              MSG=$(echo "$commit" | jq -r '.message // ""' | head -n1 | sed 's/"/\\"/g')
+              MSG=$(echo "$commit" | jq -r '.message // ""' | head -n1)
               URL=$(echo "$commit" | jq -r '.url // empty')
-              AUTH=$(echo "$commit" | jq -r '.author.name // .author // .committer.name // "unknown"')
+              AUTH=$(echo "$commit" | jq -r '.author.name // .committer.name // "unknown"')
               AUTHOR_USERNAME=$(echo "$commit" | jq -r '.author.username // empty')
+
+              AUTHOR_URL=""
+              AUTHOR_AVATAR=""
 
               if [ -n "$AUTHOR_USERNAME" ] && [ "$AUTHOR_USERNAME" != "null" ]; then
                 AUTHOR_URL="https://github.com/$AUTHOR_USERNAME"
                 AUTHOR_AVATAR="https://github.com/$AUTHOR_USERNAME.png"
-              else
-                AUTHOR_URL=""
-                AUTHOR_AVATAR=""
               fi
 
               if [ "$FIRST_SET" -eq 0 ]; then
@@ -93,14 +93,15 @@ jobs:
           done
 
           if [ "$COUNT" -eq 0 ]; then
-            echo "No commits found in batch files."
+            echo "No commits found in artifacts."
             exit 0
           fi
 
+          # Discord embed description limit is 4096 characters.
           MAX_CHARS=4000
           if [ ${#DESC} -gt $MAX_CHARS ]; then
             DESC="${DESC:0:$MAX_CHARS}"
-            DESC+=$'\n\n(Truncated - too many commits/details)'
+            DESC+=$'\n\n(Truncated - too many commits)'
           fi
 
           if [ "$COUNT" -eq 1 ]; then
@@ -132,31 +133,33 @@ jobs:
               ]
             }')
 
-          echo "Payload to send:"
-          echo "$PAYLOAD"
+          echo "Payload:"
+          echo "$PAYLOAD" | jq .
 
           echo "$PAYLOAD" > payload.json
 
-          HTTP_RESPONSE=$(curl -sS -w "HTTPSTATUS:%{http_code}" \
+          HTTP_RESPONSE=$(curl -sS \
+            -w "HTTPSTATUS:%{http_code}" \
             -H "Content-Type: application/json" \
             -X POST \
             --data-binary @payload.json \
             "$DISCORD_WEBHOOK_URL" || true)
 
-          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed -e 's/HTTPSTATUS\:.*//g')
-          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+          HTTP_BODY=$(echo "$HTTP_RESPONSE" | sed 's/HTTPSTATUS\:.*//g')
+          HTTP_STATUS=$(echo "$HTTP_RESPONSE" | tr -d '\n' | sed 's/.*HTTPSTATUS://')
 
-          echo "curl HTTP status: $HTTP_STATUS"
-          echo "curl response body: $HTTP_BODY"
+          echo "HTTP status: $HTTP_STATUS"
+          echo "Response body: $HTTP_BODY"
 
           if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-            echo "Posted $COUNT commits to Discord successfully."
+            echo "Successfully posted $COUNT commit(s) to Discord."
           else
-            echo "Failed to post to Discord (status $HTTP_STATUS)."
+            echo "Failed to post to Discord."
             exit 1
           fi
 
-      - name: Cleanup commit-batch artifacts
+      # Delete artifacts after processing
+      - name: Delete commit batch artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
         with:
