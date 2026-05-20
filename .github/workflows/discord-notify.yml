@@ -10,8 +10,11 @@ jobs:
   aggregate-and-notify:
     runs-on: ubuntu-latest
 
+    # Opt in to Node.js 24 now so deprecated Node.js 20 warnings go away.
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
-      # Download all artifacts whose names start with "commit-batch-"
       - name: Download commit batch artifacts
         uses: actions/download-artifact@v4
         with:
@@ -19,13 +22,11 @@ jobs:
           merge-multiple: true
           path: batches
 
-      # Debug: show what was downloaded
       - name: List downloaded files
         run: |
           echo "Contents of batches/:"
           ls -lah batches || true
 
-      # Build and send the Discord embed
       - name: Aggregate commits and send Discord notification
         shell: bash
         env:
@@ -39,7 +40,17 @@ jobs:
             exit 1
           fi
 
-          if ! compgen -G "batches/*.json" > /dev/null; then
+          if [ ! -d batches ]; then
+            echo "No batches directory found."
+            exit 0
+          fi
+
+          echo "Searching for JSON files..."
+          find batches -type f -name '*.json' -print
+
+          JSON_FILES=$(find batches -type f -name '*.json')
+
+          if [ -z "$JSON_FILES" ]; then
             echo "No batch JSON files found."
             exit 0
           fi
@@ -52,7 +63,7 @@ jobs:
           FIRST_AUTHOR_AVATAR=""
           FIRST_SET=0
 
-          for f in batches/*.json; do
+          for f in $JSON_FILES; do
             echo "Processing $f"
 
             while IFS= read -r commit; do
@@ -97,7 +108,6 @@ jobs:
             exit 0
           fi
 
-          # Discord embed description limit is 4096 characters.
           MAX_CHARS=4000
           if [ ${#DESC} -gt $MAX_CHARS ]; then
             DESC="${DESC:0:$MAX_CHARS}"
@@ -158,7 +168,6 @@ jobs:
             exit 1
           fi
 
-      # Delete artifacts after processing
       - name: Delete commit batch artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
