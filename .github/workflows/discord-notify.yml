@@ -6,13 +6,15 @@ on:
     branches:
       - main
 
+# Force every JavaScript-based action in this workflow
+# (including download-artifact and delete-artifact)
+# to run using Node.js 24.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   aggregate-and-notify:
     runs-on: ubuntu-latest
-
-    # Opt in to Node.js 24 now so deprecated Node.js 20 warnings go away.
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Download commit batch artifacts
