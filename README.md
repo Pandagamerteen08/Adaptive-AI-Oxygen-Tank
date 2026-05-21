@@ -118,7 +118,7 @@ Here is a video installation guide:
 
 Supported:
 
-* Subnautica (Steam version only)
+* Subnautica (Tested on the Steam version only, but it will also most likly work on the Epic Games ver too!)
 * BepInEx Pack for Subnautica
 * Nautilus
 
