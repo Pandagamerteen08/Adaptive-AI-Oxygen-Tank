@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AdaptiveAIOxygenTank</RootNamespace>
+    <AssemblyName>AdaptiveAIOxygenTank</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <!-- BepInEx and Nautilus dependencies -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="5.4.23" />
+    <PackageReference Include="BepInEx.Settings" Version="5.4.23" />
+    <PackageReference Include="Nautilus" Version="2.0.0" />
+  </ItemGroup>
+
+  <!-- Subnautica/Unity references (adjust paths as needed) -->
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\UnityEngine.AudioModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Subnautica\BepInEx\core\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Output settings -->
+  <PropertyGroup>
+    <OutputPath>bin\$(Configuration)\AdaptiveAIOxygenTank\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <!-- Post-build event to copy config files -->
+  <Target Name="PostBuild" AfterTargets="Build">
+    <Copy SourceFiles="config\AdaptiveAIOxygenTank.cfg" DestinationFolder="$(OutputPath)config" SkipUnchangedFiles="true" Condition="Exists('config\AdaptiveAIOxygenTank.cfg')" />
+    <Copy SourceFiles="config\com.bipnx.subnautica.adaptiveaioxygentank.cfg" DestinationFolder="$(OutputPath)config" SkipUnchangedFiles="true" Condition="Exists('config\com.bipnx.subnautica.adaptiveaioxygentank.cfg')" />
+  </Target>
+</Project>
